@@ -1,9 +1,3 @@
-##########
-# This Blueprint is created by Smart Home Junkie
-# (c) copyright 2023 by Smart Home Junkie. You may not copy, reproduce, distribute, transmit, modify, create derivative works,
-# or in any other way exploit any part of copyrighted material without the prior written permission from Smart Home Junkie
-##########
-
 blueprint:
   name: Awtrix Create Notification
   description: Show a notification on the Ulanzi Clock
@@ -19,24 +13,6 @@ blueprint:
           model: "AWTRIX Light"
           manufacturer: Blueforcer
           multiple: true
-    # clock_number:
-    #   name: Clock Number
-    #   description: Select your clock in your house if you have multiple clocks. This is needed to support the middle button to dismiss a notification. Supports up to 5 clocks.
-    #   selector:
-    #     select:
-    #       options:
-    #         - label: "Clock Number 1"
-    #           value: "binary_sensor.button_select"
-    #         - label: "Clock Number 2"
-    #           value: "binary_sensor.button_select_2"
-    #         - label: "Clock Number 3"
-    #           value: "binary_sensor.button_select_3"
-    #         - label: "Clock Number 4"
-    #           value: "binary_sensor.button_select_4"
-    #         - label: "Clock Number 5"
-    #           value: "binary_sensor.button_select_5"
-    #       mode: dropdown
-    #   default: "binary_sensor.button_select"
     toggle_helper:
       name: Toggle Helper
       description: Select the Toggle Helper that will toggle the notification on or off.
@@ -197,10 +173,6 @@ trigger:
     entity_id: !input toggle_helper
     to: "off"
     id: "Off"
-  # - platform: state
-  #   entity_id: !input clock_number
-  #   to: "on"
-  #   id: "Dismiss"
 
 variables:
   device_ids: !input awtrix_displays
@@ -208,7 +180,6 @@ variables:
     {% macro get_device(device_id) %}
       {{ states((device_entities(device_id) | select('search','device_topic') | list)[0] | default('unknown')) }}
     {% endmacro %}
-
     {% set ns = namespace(devices=[]) %}
     {% for device_id in device_ids %}
       {% set device=get_device(device_id)|replace(' ','')|replace('\n','') %}
@@ -247,21 +218,21 @@ action:
                     retain: false
                     topic: "{{ repeat.item ~ '/notify'}}"
                     payload: |-
-                      {   
+                      {
                         "text": "{{ notification_text }}",
                         "icon": "{{ my_icon }}",
                         "background": {{ background_color }},
                         "color": {{ text_color }},
-                        "sound": "{{ iif(play_alert_tone, "alert", "") }}",
-                        "textCase": {{ text_case }},
-                        "pushIcon": {{ push_icon }},
-                        "rainbow": {{ iif(show_rainbow, "true", "false") }},              
-                        "hold": {{ iif(hold_notification, "true", "false") }},
-                        "repeat": {{ my_repeat }},
-                        "duration": {{ my_duration }},
-                        "stack": {{ iif(stack, "true", "false") }},
-                        "noScroll": {{ iif(scrolling, "false", "true") }},
-                        "scrollSpeed": {{ scroll_speed }},
+                        "sound": "{{ iif(play_alert_tone, 'alert', '') }}",
+                        "textCase": "{{ text_case }}",
+                        "pushIcon": "{{ push_icon }}",
+                        "rainbow": "{{ iif(show_rainbow, 'true', 'false') }}",
+                        "hold": "{{ iif(hold_notification, 'true', 'false') }}",
+                        "repeat": "{{ my_repeat }}",
+                        "duration": "{{ my_duration }}",
+                        "stack": "{{ iif(stack, 'true', 'false') }}",
+                        "noScroll": "{{ iif(scrolling, 'false', 'true') }}",
+                        "scrollSpeed": "{{ scroll_speed }}",
                         "effect": "{{ effect }}"
                       }
       - conditions:
